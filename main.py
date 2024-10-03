@@ -145,11 +145,15 @@ class ControlTanque:
 
                 distancia = self.sensor_ultrasonico.medir_distancia()
                 if distancia is not None:
-                    # Calcular el nivel del tanque como distancia + 5 cm
                     nivel_tanque = distancia + MIN_NIVEL_CM
+                    if nivel_tanque == 0:
+                        print("El tanque está vacío.")
+                        self.llenado_activo = False
+                        machine.Pin(PIN_BOTON_VACIADO, machine.Pin.OUT).off()  # Apagar LED de llenado
+                        return  # Salir del método
+                    # Calcular el nivel del tanque como distancia + 5 cm
                     print(f"Vaciando tanque: {nivel_tanque} cm de {MAX_NIVEL_CM} cm")
-                    
-                    # Aquí puedes agregar condiciones para detener el vaciado si es necesario.
+                           
                 time.sleep(0.5)  # Esperar 0.5 segundos entre lecturas
 
     def paro_emergencia(self):
